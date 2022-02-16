@@ -1,4 +1,6 @@
-﻿using HRMShop.Shared;
+﻿using HRMShop.App.Services;
+using HRMShop.Shared;
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,50 +10,16 @@ namespace HRMShop.App.Pages
 {
     public partial class EmployeeOverview
     {
-        public IEnumerable<Employee> Employees { get; set; }
-        public List<Country> Countries { get; set; }
-        public List<JobCategory> JobCategories { get; set; }
-        protected override Task OnInitializedAsync()
-        {
-            InitCountries();
-            InitJobCategories();
-            InitEmployees();
-            return base.OnInitializedAsync();
-        }
+        [Inject]
+        public IEmployeeDataService EmployeeDataService { get; set; }
 
-        private void InitCountries()
-        {
-            Countries = new List<Country>() { 
-              new Country()
-              {
-                  CountryId=1,
-                  Name="Egypt"
-              }
-            };
+        public List<Employee> Employees { get; set; }
 
-        }
 
-        private void InitJobCategories()
+        protected override async Task OnInitializedAsync()
         {
-            JobCategories = new List<JobCategory>()
-            {
-                new JobCategory{JobCategoryId=1,JobCategoryName="Job"}
-            };
+            Employees = (await EmployeeDataService.GetAllEmployees()).ToList();
         }
-
-        private void InitEmployees()
-        {
-            Employees = new List<Employee>()
-            {
-                new Employee()
-                {
-                    CountryId=1,
-                    EmployeeId=1,
-                    JobCategoryId=1,
-                    FirstName="Amr",
-                    LastName="Elshaer"
-                }
-            };
-        }
+        
     }
 }

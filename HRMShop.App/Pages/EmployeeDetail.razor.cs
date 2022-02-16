@@ -1,4 +1,5 @@
-﻿using HRMShop.Shared;
+﻿using HRMShop.App.Services;
+using HRMShop.Shared;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -9,54 +10,24 @@ namespace HRMShop.App.Pages
 {
     public partial class EmployeeDetail
     {
+        [Inject]
+        public IEmployeeDataService EmployeeDataService { get; set; }
+
+        [Inject]
+        public IJobCategoryDataService JobCategoryDataService { get; set; }
+
         [Parameter]
         public string EmployeeId { get; set; }
-        public Employee Employee { get; set; } = new();
-        public IEnumerable<Employee> Employees { get; set; }
-        public List<Country> Countries { get; set; }
-        public List<JobCategory> JobCategories { get; set; }
-        protected override Task OnInitializedAsync()
-        {
-            InitCountries();
-            InitJobCategories();
-            InitEmployees();
-            Employee= Employees.FirstOrDefault(e=>e.EmployeeId==int.Parse(EmployeeId));
-            return base.OnInitializedAsync();
-        }
 
-        private void InitCountries()
-        {
-            Countries = new List<Country>() {
-              new Country()
-              {
-                  CountryId=1,
-                  Name="Egypt"
-              }
-            };
 
-        }
+        protected string JobCategory = string.Empty;
 
-        private void InitJobCategories()
-        {
-            JobCategories = new List<JobCategory>()
-            {
-                new JobCategory{JobCategoryId=1,JobCategoryName="Job"}
-            };
-        }
+        public Employee Employee { get; set; } = new Employee();
 
-        private void InitEmployees()
+        protected override async Task OnInitializedAsync()
         {
-            Employees = new List<Employee>()
-            {
-                new Employee()
-                {
-                    CountryId=1,
-                    EmployeeId=1,
-                    JobCategoryId=1,
-                    FirstName="Amr",
-                    LastName="Elshaer"
-                }
-            };
+            Employee = await EmployeeDataService.GetEmployeeDetails(int.Parse(EmployeeId));
+            JobCategory = (await JobCategoryDataService.GetJobCategoryById(Employee.JobCategoryId)).JobCategoryName;
         }
     }
 }
