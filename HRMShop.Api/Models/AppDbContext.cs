@@ -17,7 +17,7 @@ namespace HRMShop.Api.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            
 
             //seed categories
             modelBuilder.Entity<Country>().HasData(new Country { CountryId = 1, Name = "Belgium" });
@@ -62,6 +62,7 @@ namespace HRMShop.Api.Models
                 Latitude = 50.8503, 
                 Longitude = 4.3517
             });
+            base.OnModelCreating(modelBuilder);
         }
     }
 }
